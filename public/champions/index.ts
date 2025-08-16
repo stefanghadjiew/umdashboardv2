@@ -1,118 +1,59 @@
-import { StaticImageData } from 'next/image';
-import Achilies from './Achilies.jpg';
-import Alice from './Alice.jpg';
-import AncientLeshen from './AncientLeshen.webp';
-import AnnieChristmas from './AnnieChristmas.webp';
-import Beowulf from './Beowulf.jpg';
-import Bigfoot from './Bigfoot.jpg';
-import BlackPanther from './BlackPanther.jpg';
-import BlackWidow from './BlackWidow.jpg';
-import BloodyMary from './BloodyMary.jpg';
-import Bullseye from './Bullseye.jpg';
-import Ciri from './Ciri.webp';
-import CloackAndDagger from './CloackAndDagger.jpg';
-import Daredevil from './Daredevil.jpg';
-import DrStrange from './Dr.Strange.jpg';
-import Dracula from './Dracula.jpg';
-import DrJillTrent from './DrJillTrent.jpg';
-import DrSatler from './DrSatler.jpg';
-import Elektra from './Elektra.jpg';
-import Eredin from './Eredin.webp';
-import Genie from './Genie.jpg';
-import Gerald from './Gerald.jpg';
-import GhostRider from './GhostRider.webp';
-import GoldenBat from './GoldenBat.jpg';
-import Hamlet from './Hamlet.webp';
-import Houdini from './Houdini.jpg';
-import InvisibleMan from './InvisibleMan.jpg';
-import JekyllHide from './JekyllHide.jpg';
-import KingArthur from './KingArthur.jpg';
-import LittleRed from './LittleRed.jpg';
-import LukeCage from './LukeCage.webp';
-import Medusa from './Medusa.jpg';
-import MoonKnight from './MoonKnight.jpg';
-import MsMarvel from './MsMarvel.png';
-import Muldoon from './Muldoon.jpg';
-import NicolaTesla from './NicolaTesla.webp';
-import OdaNobunaga from './OdaNobunaga.webp';
-import Philippa from './Philippa.webp';
-import Raptors from './Raptors.jpg';
-import RobinHood from './RobinHood.jpg';
-import Shakespeare from './Shakespeare.webp';
-import Sherlock from './Sherlock.jpg';
-import Sinbad from './Sinbad.jpg';
-import SpiderMan from './SpiderMan.jpg';
-import SquirrelGirl from './SquirrelGirl.jpg';
-import SunWukong from './SunWukong.jpg';
-import TheWaywardSisters from './TheWaywardSisters.webp';
-import Titania from './Titania.webp';
-import TomoeGozen from './TomoeGozen.jpg';
-import TRex from './TRex.jpg';
-import unmatched_logo from './unmatched-logo.png';
-import unmatched_logo_black_white from './unmatched-logo-black-white.png';
-import unmatched_logo_remove_bg from './unmatched-logo-black-white-removebg-preview.png';
-import WinterSoldier from './WinterSoldier.jpg';
-import Yennefer from './Yennefer.webp';
-import Yennenga from './Yennenga.jpg';
-import unmatched_tagline from './UM-Tagline.png';
-import SheHulk from './SheHulk.jpg';
-
-export const resources: { [key: string]: StaticImageData | string } = {
-  unmatched_logo,
-  unmatched_logo_black_white,
-  unmatched_logo_remove_bg,
-  Elektra,
-  DrStrange,
-  Genie,
-  Medusa,
-  Bigfoot,
-  BlackWidow,
-  GoldenBat,
-  NicolaTesla,
-  Yennefer,
-  Yennenga,
-  Achilies,
-  Houdini,
-  LukeCage,
-  Sherlock,
-  SunWukong,
-  Daredevil,
-  Eredin,
-  LittleRed,
-  MoonKnight,
-  Sinbad,
-  BlackPanther,
-  Muldoon,
-  RobinHood,
-  TomoeGozen,
-  AnnieChristmas,
-  Ciri,
-  DrSatler,
-  GhostRider,
-  Raptors,
-  Alice,
-  Beowulf,
-  BloodyMary,
-  Bullseye,
-  DrJillTrent,
-  Dracula,
-  OdaNobunaga,
+export const resources: { [key: string]: string } = {
+  unmatched_logo : '/champions/unmtached-logo.png',
+  unmatched_logo_black_white: '/champions/unmatched_logo_black_white.png',
+  unmatched_logo_remove_bg: '/champions/unmatched_logo_remove_bg.png',
+  Elektra: '/champions/Elektra.jpg',
+  DrStrange: '/champions/DrStrange.jpg',
+  Genie: '/champions/Genie.jpg',
+  Medusa: '/champions/Medusa.jpg',
+  Bigfoot: '/champions/Bigfoot.jpg',
+  BlackWidow: '/champions/BlackWidow.jpg',
+  GoldenBat: '/champions/GoldenBat.jpg',
+  NicolaTesla: '/champions/NicolaTesla.webp',
+  Yennefer: '/champions/Yennefer.webp',
+  Yennenga: '/champions/Yennenga.jpg',
+  Achilies: '/champions/Achilies.jpg',
+  Houdini: '/champions/Houdini.jpg',
+  LukeCage: '/champions/LukeCage.webp',
+  Sherlock: '/champions/Sherlock.jpg',
+  SunWukong: '/champions/SunWukong.jpg',
+  Daredevil: '/champions/Daredevil.jpg',
+  Eredin: '/champions/Eredin.webp',
+  LittleRed: '/champions/LittleRed.jpg',
+  MoonKnight: '/champions/MoonKnight.jpg',
+  Sinbad: '/champions/Sinbad.jpg',
+  BlackPanther: '/champions/BlackPanther.jpg',
+  Muldoon: '/champions/Muldoon.jpg',
+  RobinHood: '/champions/RobinHood.jpg',
+  TomoeGozen: '/champions/TomoeGozen.jpg',
+  AnnieChristmas: '/champions/AnnieChristmas.webp',
+  Ciri: '/champions/Ciri.webp',
+  DrSatler: '/champions/DrSatler.jpg',
+  GhostRider: '/champions/GhostRider.webp',
+  Raptors: '/champions/Raptors.jpg',
+  Alice: '/champions/Alice.jpg',
+  Beowulf: '/champions/Beowulf.jpg',
+  BloodyMary: '/champions/BloodyMary.jpg',
+  Bullseye: '/champions/Bullseye.jpg',
+  DrJillTrent: '/champions/DrJillTrent.jpg',
+  Dracula: '/champions/Dracula.jpg',
+  OdaNobunaga: '/champions/OdaNobunaga.webp',
   TRex: '/champions/TRex.jpg',
-  WinterSoldier,
-  InvisibleMan,
-  JekyllHide,
-  KingArthur,
-  SpiderMan,
-  Gerald,
-  AncientLeshen,
-  Philippa,
-  Titania,
-  CloackAndDagger,
-  Hamlet,
-  MsMarvel,
-  Shakespeare,
-  SquirrelGirl,
-  TheWaywardSisters,
-  unmatched_tagline,
-  SheHulk
+  WinterSoldier: '/champions/WinterSoldier.jpg',
+  InvisibleMan :  '/champions/InvisibleMan.jpg',
+  JekyllHide: '/champions/JekyllHide.jpg',
+  KingArthur: '/champions/KingArthur.jpg',
+  SpiderMan: '/champions/SpiderMan.jpg',
+  Gerald: '/champions/Gerald.jpg',
+  AncientLeshen:  '/champions/AncientLeshen.webp',
+  Philippa: '/champions/Philippa.webp',
+  Titania: '/champions/Titania.webp',
+  CloackAndDagger: '/champions/CloackAndDagger.jpg',
+  Hamlet: '/champions/Hamlet.webp',
+  MsMarvel: '/champions/MsMarvel.png',
+  Shakespeare:  '/champions/Shakespeare.webp',
+  SquirrelGirl: '/champions/SquirrelGirl.jpg',
+  TheWaywardSisters: '/champions/TheWaywardSisters.webp',
+  unmatched_tagline: 'champions/UM-Tagline.png',
+  SheHulk: 'champions/SheHulk.jpg'
 };
