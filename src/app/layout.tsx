@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Image from "next/image";
+import { resources } from '../../public/champions';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,7 +29,10 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <div className="max-w-[500px] m-4 sm:my-4 sm:mx-auto p-4 sm:p-[2rem] h-[calc(100dvh-2rem)] flex flex-col justify-between bg-white items-center">
+         {/*  <Image src={resources.unmatched_logo_black_white} alt='unmatched-logo'/> */}
+          {children}
+        </div>
       </body>
     </html>
   );

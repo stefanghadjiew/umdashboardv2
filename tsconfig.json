@@ -13,13 +13,18 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
+    "baseUrl": "src/",
     "plugins": [
       {
         "name": "next"
       }
     ],
     "paths": {
-      "@/*": ["./src/*"]
+      "@components": ["components/index.ts"],
+      "@lib/*": ["lib/*"],
+      "@shadcn":["shadcn/index.ts"],
+      "@shadcn-components": ["shadcn/components/index.ts"],
+      "@convex/*": ["../convex/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
