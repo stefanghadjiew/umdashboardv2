@@ -6,10 +6,10 @@ import { Avatar, AvatarFallback, AvatarImage } from "@shadcn-components"
 
 
 export const Navigation = () => {
-    const { data } = useSession();
+    const { data, isPending } = useSession();
 
-    if(!data?.session) {
-        return null;
+    if(isPending) {
+        return <div>Loading session...</div>
     }
 
     return (
