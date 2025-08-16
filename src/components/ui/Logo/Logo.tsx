@@ -1,8 +1,8 @@
 import Image from "next/image";
-import { resources } from "../../../../public/champions";
+import logo from '../../../../public/champions/unmatched-logo-black-white.png';
 
 export const Logo = () => {
     return (
-        <Image src={resources.unmatched_logo_black_white} alt='unmatched-logo'/>
+        <Image src={logo} alt='unmatched-logo'/>
     )
 }
