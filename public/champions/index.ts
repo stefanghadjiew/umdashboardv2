@@ -54,6 +54,6 @@ export const resources: { [key: string]: string } = {
   Shakespeare:  '/champions/Shakespeare.webp',
   SquirrelGirl: '/champions/SquirrelGirl.jpg',
   TheWaywardSisters: '/champions/TheWaywardSisters.webp',
-  unmatched_tagline: 'champions/UM-Tagline.png',
-  SheHulk: 'champions/SheHulk.jpg'
+  unmatched_tagline: '/champions/UM-Tagline.png',
+  SheHulk: '/champions/SheHulk.jpg'
 };

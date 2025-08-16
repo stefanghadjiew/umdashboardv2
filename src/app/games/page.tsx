@@ -1,7 +1,7 @@
 'use client';
 
 import { Button } from "@shadcn-components";
-import { RefreshButton, Logo } from "@components";
+import { Logo } from "@components";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@convex/_generated/api";
 import { GameStatus, GAME_STATUS } from "@convex/tables/games";
@@ -53,7 +53,6 @@ export default function Board() {
         </div>
         <div className="w-full flex flex-col gap-2">
           <NewGameButton />
-          <RefreshButton />
         </div>
         </>
     
