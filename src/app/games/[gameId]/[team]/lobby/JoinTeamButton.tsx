@@ -6,16 +6,7 @@ import { api } from "@convex/_generated/api";
 import { Id } from "@convex/_generated/dataModel";
 import { useSession } from "@lib/auth-client";
 import { useRouter } from "next/navigation";
-import { IChampion } from "app/intefaces";
-
-interface IGame {
-    team1?: string[];
-    team2?: string[] ;
-    players?: string[];
-    status: "FULL" | "ACTIVE" | "DONE";
-    createdBy: string;
-    championPool?: IChampion[];
-}
+import { IGame } from "app/intefaces";
 
 interface IJoinGameButton {
     team: 'team1' | 'team2';
@@ -27,7 +18,7 @@ const shouldDisableTeamButton = ( team:IJoinGameButton['team'], currentGame?: IG
         if(!currentGame[team] || !email) {
             return false;
         }
-        return currentGame[team]?.length >= 2 || currentGame[team]?.includes(email);
+        return currentGame[team]?.length >= 2 || currentGame[team].map((player) => player.player)?.includes(email);
     }
 }
 
