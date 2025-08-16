@@ -10,6 +10,6 @@ export const ChampionCard = ({name, onClick, className} : IChampionCard) => {
     const image = resources[name] ?? '';
     const componentClasses = `inline-block h-[200px] w-[120px] bg-cover bg-center cursor-pointer text-red ${className}`;
     return (
-        <div onClick={() => onClick()} className={componentClasses} style={{ backgroundImage: `url(${image.src})` }}>{name}</div>
+        <div onClick={() => onClick()} className={componentClasses} style={{ backgroundImage: `url(${image})` }}>{name}</div>
     )
 }

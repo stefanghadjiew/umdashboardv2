@@ -57,7 +57,7 @@ import Yennenga from './Yennenga.jpg';
 import unmatched_tagline from './UM-Tagline.png';
 import SheHulk from './SheHulk.jpg';
 
-export const resources: { [key: string]: StaticImageData } = {
+export const resources: { [key: string]: StaticImageData | string } = {
   unmatched_logo,
   unmatched_logo_black_white,
   unmatched_logo_remove_bg,
@@ -97,7 +97,7 @@ export const resources: { [key: string]: StaticImageData } = {
   DrJillTrent,
   Dracula,
   OdaNobunaga,
-  TRex,
+  TRex: '/champions/TRex.jpg',
   WinterSoldier,
   InvisibleMan,
   JekyllHide,
