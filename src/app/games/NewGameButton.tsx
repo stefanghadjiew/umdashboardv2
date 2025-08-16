@@ -8,12 +8,16 @@ import { Button } from "@shadcn-components";
 
 export const NewGameButton = () => {
     const router = useRouter();
-    const { data } = useSession();
+    const { data, isPending } = useSession();
     const createNewGame = useMutation(api.mutations.createNewGame);
 
     const handleCreateNewGame = async () => {
         const newGameId = await createNewGame({email: data?.user.email ?? ''});
         router.push(`/games/${newGameId}`)
+    }
+
+    if(isPending) {
+        return 'Loading session...'
     }
 
     return (
