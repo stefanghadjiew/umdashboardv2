@@ -34,8 +34,11 @@ export const Form = () => {
                   Login
                 </Button>
                 <ProviderLoginButton provider={PROVIDERS.Facebook} />
+                <div className="flex gap-3">
+
                 <ProviderLoginButton provider={PROVIDERS.Github}/>
                 <ProviderLoginButton provider={PROVIDERS.Google}/>
+                </div>
               </div>
             </div>
             <div className="mt-4 text-center text-sm">
