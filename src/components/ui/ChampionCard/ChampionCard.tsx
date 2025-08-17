@@ -8,8 +8,8 @@ interface IChampionCard {
 
 export const ChampionCard = ({name, onClick, className} : IChampionCard) => {
     const image = resources[name] ?? '';
-    const componentClasses = `inline-block h-[200px] w-[120px] bg-cover bg-center cursor-pointer text-red ${className}`;
+    const componentClasses = `flex justify-center items-end h-[200px] w-[155px] bg-cover bg-center cursor-pointer text-white ${className}`;
     return (
-        <div onClick={() => onClick()} className={componentClasses} style={{ backgroundImage: `url(${image})` }}>{name}</div>
+        <div onClick={() => onClick()} className={componentClasses} style={{ backgroundImage: `url(${image})` }}><span className="font-bold text-xl">{name}</span></div>
     )
 }

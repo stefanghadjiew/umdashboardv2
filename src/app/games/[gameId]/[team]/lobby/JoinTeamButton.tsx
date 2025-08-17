@@ -11,6 +11,7 @@ import { IGame } from "app/intefaces";
 interface IJoinGameButton {
     team: 'team1' | 'team2';
     gameId: Id<"games">;
+    className?: string;
 }
 
 const shouldDisableTeamButton = ( team:IJoinGameButton['team'], currentGame?: IGame ,email?: string) => {
@@ -22,7 +23,7 @@ const shouldDisableTeamButton = ( team:IJoinGameButton['team'], currentGame?: IG
     }
 }
 
-export const JoinTeamButton = ({team, gameId} : IJoinGameButton) => {
+export const JoinTeamButton = ({team, gameId, className} : IJoinGameButton) => {
     const { data } = useSession();
     const router = useRouter();
     const addPlayer = useMutation(api.mutations.addUserToTeam);
@@ -37,7 +38,7 @@ export const JoinTeamButton = ({team, gameId} : IJoinGameButton) => {
         router.push(`/games/${gameId}/${team}/lobby`)
     }
 
-    const buttonClassName = shouldDisableButton ? 'pointer-events-none opacity-50' : '';
+    const buttonClassName = shouldDisableButton ? `pointer-events-none opacity-50 ${className}` : `${className}`;
 
     return (
         <Button className={buttonClassName} onClick={handleAddPlayer}>{btnText}</Button>

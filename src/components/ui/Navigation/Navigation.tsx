@@ -12,7 +12,7 @@ export const Navigation = () => {
         <div className="fixed w-full max-w-[500px] flex justify-between mx-2 px-8 pt-2">
             <LogoutButton />
             <Avatar>
-                <AvatarImage src={data?.user?.image ?? ''} />
+                <AvatarImage src={data?.user?.image ?? undefined} />
                 <AvatarFallback>CN</AvatarFallback>
             </Avatar>
         </div>

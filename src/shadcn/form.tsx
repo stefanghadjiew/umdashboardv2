@@ -29,15 +29,15 @@ export const Form = () => {
                 </div>
                 <Input id="password" type="password" required />
               </div>
-              <div className="flex flex-col gap-3">
+              <div className="flex flex-col gap-2">
                 <Button type="submit" className="w-full bg-inherit text-black border-1">
                   Login
                 </Button>
                 <ProviderLoginButton provider={PROVIDERS.Facebook} />
-                <div className="flex gap-3">
+                <div className="flex gap-2">
 
-                <ProviderLoginButton provider={PROVIDERS.Github}/>
-                <ProviderLoginButton provider={PROVIDERS.Google}/>
+                <ProviderLoginButton provider={PROVIDERS.Github} className="flex-1/2"/>
+                <ProviderLoginButton provider={PROVIDERS.Google} className="flex-1/2"/>
                 </div>
               </div>
             </div>

@@ -4,3 +4,4 @@ export * from './ui/SVG';
 export * from './ui/Navigation';
 export * from './ui/ChampionCard';
 export * from './ui/Logo';
+export * from './ui/Vs';

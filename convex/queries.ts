@@ -3,6 +3,17 @@ import { query } from './_generated/server';
 import { GAME_STATUS } from "./tables/games";
 import { v } from "convex/values";
 
+
+export const getPlayersPerTeam = query({
+  args: { gameId: v.id('games') },
+  handler: async (ctx, { gameId }) => {
+    const currentGame = await ctx.db.get(gameId);
+    const team1Players = currentGame?.team1?.map((player) => player.player);
+    const team2Players = currentGame?.team2?.map((player) => player.player);
+    return { team1: team1Players, team2: team2Players };
+  }
+})
+
 export const getTeamChampions = query({
   args: { gameId: v.id('games'), team: v.union(v.literal('team1'), v.literal('team2'))},
   handler: async (ctx, { gameId, team }) => {

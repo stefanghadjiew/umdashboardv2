@@ -26,9 +26,13 @@ const pickedChampionsClasses = (champion: IChampion, ownPicks?: TeamPicks, teamM
 }
 
 const readyButtonClasses = (ownPicks?: TeamPicks) => {
-    if(ownPicks) {
-        return ownPicks.champions.length < 2 ? 'pointer-events-none opacity-50' : '';
+    if(!ownPicks?.champions) {
+        return 'pointer-events-none opacity-50';
     }
+    if([0,1].includes(ownPicks?.champions.length)) {
+      return 'pointer-events-none opacity-50';  
+    }
+    return '';
 }
 
 export default function Lobby() {
@@ -51,18 +55,18 @@ export default function Lobby() {
     return (
         <>
             <h1 className="mt-20 mb-2 font-bold text-2xl">Teammate picks:</h1>
-            <div className="mb-2 flex border-5 p-2 border-red-400 w-[248px] justify-between min-h-[48.5px]">
+            <div className="mb-2 flex border-5 p-2 border-red-400 w-[320px] justify-between min-h-[48.5px]">
                 {renderTeammateChampions}
             </div>
-            <div className="w-full h-full overflow-auto grid grid-cols-[repeat(auto-fill,minmax(120px,120px))] gap-2 justify-center mb-6">
+            <div className="w-full h-full overflow-auto grid grid-cols-[repeat(auto-fill,minmax(155px,155px))] gap-2 justify-center mb-2">
                 {renderChampions}
             </div>
-            <div className="w-[248px] flex flex-col gap-2">
+            <div className="w-full flex flex-col gap-2 max-w-[325px]">
                 {isGameMaster && 
-                    <>
-                        <Button>Randomize 25</Button>
-                        <Button onClick={handleExcludeTiers}>Exclude S+/D+</Button>
-                    </>
+                    <div className="flex gap-2">
+                        <Button className="flex-1/2">Randomize 25</Button>
+                        <Button className="flex-1/2" onClick={handleExcludeTiers}>Exclude S+/D+</Button>
+                    </div>
                 }
                 <Button className={readyButtonClasses(ownPicks)}>Ready</Button>
                 <BackFromTeamButton />
