@@ -13,7 +13,7 @@ export const ProviderLoginButton = ({ provider }: { provider: Provider }) => {
   const ProviderIcon = providerIcons[provider];
   return (
     <Button type="button" onClick={() => signInWithSocial(provider)} className="w-full cursor-pointer">
-      <ProviderIcon />
+      {ProviderIcon ? <ProviderIcon /> : null}
       {provider}
     </Button>
   );
