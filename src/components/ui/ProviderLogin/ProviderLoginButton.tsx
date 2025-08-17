@@ -10,10 +10,10 @@ import { SVG } from '@components';
 const providerIcons: Record<Provider, any> = { Facebook : SVG.Facebook, Google: SVG.Google, Github: SVG.Github };
 
 export const ProviderLoginButton = ({ provider }: { provider: Provider }) => {
-  const providerIcon = providerIcons[provider];
+  const ProviderIcon = providerIcons[provider];
   return (
     <Button type="button" onClick={() => signInWithSocial(provider)} className="w-full cursor-pointer">
-      {providerIcon()}
+      <ProviderIcon />
       {provider}
     </Button>
   );
