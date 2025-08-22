@@ -3,13 +3,41 @@ import { v } from "convex/values";
 import { GAME_STATUS } from './tables/games';
 import { DATABASE_TABLES } from './constants';
 import { championSchema } from './tables/champions';
+import { updatedPicks } from './helper';
 
 const newGame = {
     status: GAME_STATUS.ACTIVE,
     championPool: [],
+    bannedChampions: [],
     team1: [],
-    team2: []
+    team2: [],
+    finalPicks: {
+        team1: [],
+        team2: []
+    }
 }
+
+export const pickFinalChampion = mutation({
+    args: {
+        gameId: v.id('games'),
+        email: v.string(),
+        team: v.union(v.literal('team1'), v.literal('team2')),
+        champion: v.object(championSchema)
+    },
+    handler: async (ctx, { gameId, email, team, champion }) => {
+        const currentGame = await ctx.db.get(gameId);
+        if(!currentGame) {
+            throw new Error('Game not found!')
+        }
+
+        const currentTeam = currentGame.finalPicks?.[team] ?? [];
+        const updatedTeam = updatedPicks(currentTeam, email, champion, true);
+
+        await ctx.db.patch(gameId, {
+            finalPicks: {...currentGame.finalPicks, [team]: updatedTeam}
+        });
+    }
+})
 
 export const pickChampions = mutation({
   args: {
@@ -26,43 +54,29 @@ export const pickChampions = mutation({
 
     const currentTeam = currentGame[team] ?? [];
 
-    // Find current player picks
-    const existingPlayerIndex = currentTeam.findIndex(p => p.player === email);
-
-    let updatedTeam;
-
-    if (existingPlayerIndex >= 0) {
-      const existingPlayer = currentTeam[existingPlayerIndex];
-
-      // Toggle champion: remove if exists, otherwise add
-      const alreadyPicked = existingPlayer.champions.some(c => c._id === champion._id);
-      let updatedChampions;
-      if (alreadyPicked) {
-        updatedChampions = existingPlayer.champions.filter(c => c._id !== champion._id);
-      } else {
-        updatedChampions = [...existingPlayer.champions, champion].slice(-2); // keep max 2
-      }
-
-      const updatedPlayer = { ...existingPlayer, champions: updatedChampions };
-
-      updatedTeam = [
-        ...currentTeam.slice(0, existingPlayerIndex),
-        updatedPlayer,
-        ...currentTeam.slice(existingPlayerIndex + 1)
-      ];
-    } else {
-      // First pick for this player
-      updatedTeam = [
-        ...currentTeam,
-        { player: email, champions: [champion] }
-      ];
-    }
+    const updatedTeam = updatedPicks(currentTeam, email, champion)
 
     await ctx.db.patch(gameId, {
-      [team]: updatedTeam
+        [team]: updatedTeam
     });
   }
 });
+
+export const bannDuplicateChampions = mutation({
+    args: {
+        gameId: v.id('games'),
+        champions: v.optional(v.array(v.object(championSchema)))
+    },
+    handler: async (ctx, {gameId, champions}) => {
+        const currentGame = await ctx.db.get(gameId);
+        if(!currentGame) {
+            throw new Error('Game not found!')
+        }
+        await ctx.db.patch(gameId, {
+            bannedChampions: champions
+        })
+    } 
+})
 
 export const createNewGame = mutation({ 
     args: {email: v.string()},
@@ -84,7 +98,6 @@ export const patchChampionPool = mutation({
 })
 
 
-//TODO: remove player picks from game
 export const removePlayerFromTeam = mutation({
     args: {email: v.string(), gameId: v.id('games'), team: v.union(v.literal('team1'), v.literal('team2'))},
     handler: async (ctx, { email, gameId, team }) => {
@@ -99,8 +112,6 @@ export const removePlayerFromTeam = mutation({
         })
     }
 })
-
-//TODO: remove player picks from game
 export const removePlayerFromGame = mutation({
     args: {email: v.string(), gameId: v.id('games')},
     handler: async (ctx, { email, gameId }) => {
@@ -120,7 +131,8 @@ export const removePlayerFromGame = mutation({
         await ctx.db.patch(gameId, {
             players: updatedPlayers,
             team1: updatedTeam1,
-            team2: updatedTeam2
+            team2: updatedTeam2,
+            status: "ACTIVE"
         });  
         }
     })
@@ -133,12 +145,13 @@ export const addUserToGame = mutation({
         if(!currentGame) {
             throw new Error("Game not found !")
         }
-        if(playersInGameArray.length >= 4) {
+        if(playersInGameArray.length === 4) {
             throw new Error("Game is full !")
         }
 
         await ctx.db.patch(gameId , {
-            players: [...playersInGameArray, email]
+            players: [...playersInGameArray, email],
+            status: [...playersInGameArray, email].length === 4 ? 'FULL' : 'ACTIVE'
         })
     } 
 })
@@ -152,12 +165,13 @@ export const addUserToTeam = mutation({
     },
     handler: async (ctx, {email, gameId, team}) => {
         const currentGame = await ctx.db.get(gameId);
-        const teamArray = currentGame?.[team] || [];
-        const teamMembers = teamArray.map((t) => t.player);
+        const currentTeam = currentGame?.[team] || [];
+        const teamMembers = currentTeam.map((t) => t.player);
+        const newPlayer = {player: email, champions: []};
         if (!currentGame) {
             throw new Error("Game not found !");
         }
-        if(teamArray.length >= 2) {
+        if(currentTeam.length >= 2) {
             throw new Error(`Cannot add more than 2 players to ${team}`);
         }
         if (teamMembers.includes(email)) {
@@ -165,7 +179,7 @@ export const addUserToTeam = mutation({
         }
 
         await ctx.db.patch(gameId, {
-        [team]: [...teamArray, email],
+        [team]: [...currentTeam, newPlayer],
         });
     }
 })

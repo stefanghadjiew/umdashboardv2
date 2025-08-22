@@ -24,14 +24,12 @@ export const games = defineTable({
     /* user: v.id("users"), */
     players: v.optional( v.array(v.string())),
     createdBy: v.string(),
-    /* championPool: v.array(v.id('champions')), */
     championPool: v.optional(v.array(v.object(championSchema))),
-    /* excludedTiers: v.array(v.string()), */ 
-    /* team1: v.array(v.id('users')) */
+    bannedChampions: v.optional(v.array(v.object(championSchema))),
     team1: v.optional(
       v.array(
         v.object({
-          player: v.string(), // email or user identifier
+          player: v.string(),
           champions: v.array(v.object(championSchema)),
         })
       )
@@ -44,4 +42,8 @@ export const games = defineTable({
         })
       )
     ),
+    finalPicks: v.optional(v.object({
+      team1: v.optional(v.array(v.object({player: v.string(), champions: v.array(v.object(championSchema))}))),
+      team2: v.optional(v.array(v.object({player: v.string(), champions: v.array(v.object(championSchema))})))
+    }))
 });

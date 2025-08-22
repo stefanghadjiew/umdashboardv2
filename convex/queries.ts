@@ -2,7 +2,92 @@ import { DATABASE_TABLES } from "./constants";
 import { query } from './_generated/server';
 import { GAME_STATUS } from "./tables/games";
 import { v } from "convex/values";
+import { Champion } from "./tables/interfaces";
 
+
+const getPlayersWhoNeedRepick = (team: {player: string, champions: Champion[]}[], bannedChampions: Champion[] ) => {
+  const bannedChampionsIds = new Set(bannedChampions.map((champ) => champ._id));
+  const playersNeedingRePick = team
+    .map((team: any) => {
+      // count how many of their champions are banned
+      const bannedCount = team.champions.filter((c: any) =>
+        bannedChampionsIds.has(c._id)
+      ).length;
+
+      if (bannedCount > 0) {
+        return {
+          player: team.player,
+          numberOfPicks: bannedCount, // 1 or 2
+        };
+      }
+      return null;
+    })
+    .filter(Boolean);
+  
+    return playersNeedingRePick;
+}
+
+const filterBannedChampionsFromTeam = (bannedChampions:Champion[],teamPicks?:Champion[]) => {
+  const bannedChampionsSetOfIds = new Set(bannedChampions.map((champ) => champ._id));
+  return teamPicks?.filter((champ) => !bannedChampionsSetOfIds.has(champ._id));
+}
+
+export const getFinalChampionsForTeam = query({
+  args: {gameId: v.id('games'), team: v.union(v.literal('team1'), v.literal('team2'))},
+  handler: async (ctx, { gameId, team }) => {
+    const currentGame = await ctx.db.get(gameId);
+    if(!currentGame) {
+      throw new Error('Game not found!')
+    }
+    return currentGame.finalPicks?.[team]
+  }
+})
+
+export const getPlayersWhoShouldRepick = query({
+  args: { gameId: v.id('games') },
+  handler: async (ctx, { gameId }) => {
+    const currentGame = await ctx.db.get(gameId);
+    if(!currentGame) {
+      throw new Error('Game not found!')
+    }
+    const {team1, team2, bannedChampions} = currentGame;
+    if(!bannedChampions?.length) {
+      return { team1: [], team2: [] };
+    }
+    const team1Repicks = team1 ? getPlayersWhoNeedRepick(team1, bannedChampions) : [];
+    const team2Repicks = team2 ? getPlayersWhoNeedRepick(team2, bannedChampions) : [];
+
+    return { team1: team1Repicks, team2: team2Repicks };
+  }
+})
+
+export const getGameMaster = query({
+  args: { gameId: v.id('games') },
+  handler: async (ctx, { gameId }) => {
+    const currentGame = await ctx.db.get(gameId);
+    if(!currentGame) {
+      throw new Error('Game not found!')
+    }
+    return { gameMaster: currentGame.createdBy }
+  }
+})
+
+export const getTeamsPicksForRevealPhase = query({
+  args: { gameId: v.id('games') },
+  handler: async(ctx, { gameId }) => {
+    const currentGame = await ctx.db.get(gameId);
+    const bannedChampions = currentGame?.bannedChampions;
+    const team1Picks = currentGame?.team1?.map((obj) => obj.champions).flat();
+    const team2Picks = currentGame?.team2?.map((obj) => obj.champions).flat();
+    if(bannedChampions?.length) {
+      return { 
+        team1: filterBannedChampionsFromTeam(bannedChampions, team1Picks),
+        team2:  filterBannedChampionsFromTeam(bannedChampions, team2Picks)
+      }
+    }
+    return { team1: team1Picks, team2: team2Picks }
+  }
+})
 
 export const getPlayersPerTeam = query({
   args: { gameId: v.id('games') },
@@ -26,11 +111,18 @@ export const getTeamChampions = query({
   }
 })
 
+
+//TODO: Remove banned and already picked champions
 export const getChampionsPool = query({
     args: {gameId: v.id('games')},
     handler: async (ctx, { gameId }) => {
       const currentGame = await ctx.db.get(gameId);
-      return { championPool : currentGame?.championPool, createdBy: currentGame?.createdBy };
+      if(! currentGame) {
+        throw new Error('Game not found!')
+      }
+      const bannedChampionIds = new Set(currentGame.bannedChampions?.map((champ) => champ._id));
+      const championPool =  currentGame?.championPool?.filter(o => !bannedChampionIds.has(o._id));
+      return { championPool, createdBy: currentGame?.createdBy };
     }
 })
 

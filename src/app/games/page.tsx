@@ -42,6 +42,8 @@ export default function Board() {
 
     const renderGames = games?.map((game) => <div className="flex gap-4 items-center justify-between border-b border-b-gray-400 rounded-b-sm p-1" key={game._id}>
       <Button onClick={() => handleJoinPlayerToGame(game._id)} className={`font-bold text-black bg-inherit flex-1 justify-start ${inactiveGameClasses(game.status)}`}>{`Join ${game.createdBy}'s Game`}</Button>
+      <pre className="text-sm font-bold">{`${game.players?.length} players`}</pre>
+      <pre>|</pre>
       <pre className={`text-sm font-bold ${mapGameStatusToColor(game.status)}`}>{game.status}</pre>
     </div>)
 
