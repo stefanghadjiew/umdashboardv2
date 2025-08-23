@@ -51,10 +51,10 @@ export const pickChampions = mutation({
     if (!currentGame) {
       throw new Error('Game not found!');
     }
-
+    const bannedChampionsSet = new Set(currentGame.bannedChampions?.map((champ) => champ._id))
     const currentTeam = currentGame[team] ?? [];
 
-    const updatedTeam = updatedPicks(currentTeam, email, champion)
+    const updatedTeam = updatedPicks(currentTeam, email, champion, false,bannedChampionsSet)
 
     await ctx.db.patch(gameId, {
         [team]: updatedTeam
@@ -72,8 +72,32 @@ export const bannDuplicateChampions = mutation({
         if(!currentGame) {
             throw new Error('Game not found!')
         }
+        const banned = champions ?? [];
+
+        // remove banned champions from each team’s picks
+        const sanitizeTeam = (team: typeof currentGame.team1) =>
+        team?.map(player => ({
+            ...player,
+            champions: player.champions.filter(
+            champ => !banned.some((b) => b._id === champ._id)
+            )
+        })) ?? [];
+
+        const updatedTeam1 = sanitizeTeam(currentGame.team1);
+        const updatedTeam2 = sanitizeTeam(currentGame.team2);
+        const allThatShouldBeBanned = [...currentGame.bannedChampions ?? [], ...champions ?? []];
+        const stillPicked = [...updatedTeam1, ...updatedTeam2].flatMap((player) => player.champions);
+
+        // new champion pool = current pool - banned - picked
+        const updatedChampionPool =
+            currentGame.championPool?.filter(
+            (champ) =>
+                !allThatShouldBeBanned.some((b) => b._id === champ._id) &&
+                !stillPicked.some((p) => p._id === champ._id)
+            ) ?? [];
         await ctx.db.patch(gameId, {
-            bannedChampions: champions
+            bannedChampions: allThatShouldBeBanned,
+            championPool: updatedChampionPool
         })
     } 
 })

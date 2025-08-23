@@ -5,15 +5,18 @@ import { ChampionCard } from "@components";
 import { DisplayTeams } from "app/games/[gameId]/DisplayTeams";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@convex/_generated/api";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { Id } from "@convex/_generated/dataModel";
 import { IChampion } from "app/intefaces";
 import { Button } from "@shadcn-components";
 import { useSession } from "@lib/auth-client";
-import { useRouter } from "next/navigation";
 import { useSelectChampions } from "../useSelectChampions";
 
-const banDuplicatesButtonClasses = (isBanDuplicatesEnabled: boolean) => isBanDuplicatesEnabled ? '' : 'pointer-events-none opacity-50';
+
+const disabledClasses = 'pointer-events-none opacity-50';
+const banDuplicatesButtonClasses = (isBanDuplicatesEnabled: boolean) => isBanDuplicatesEnabled ? '' : disabledClasses;
+
+const startGameButtonClasses = (shouldStartGame: boolean) => shouldStartGame ? '' : disabledClasses;
 
 export default function Reveal() {
     const { picks, handleSelectChampion, pickedChampionsClasses } = useSelectChampions({isFinalPick: true});
@@ -26,6 +29,7 @@ export default function Reveal() {
     const teamsPicks = useQuery(api.queries.getTeamsPicksForRevealPhase, { gameId: typedGameId });
     const gameMasterData = useQuery(api.queries.getGameMaster, { gameId: typedGameId });
     const playersToRepick = useQuery(api.queries.getPlayersWhoShouldRepick, { gameId: typedGameId });
+    const finalPicksForGameStart = useQuery(api.queries.getFinalPicksForStartingGame, { gameId: typedGameId });
     const currentTeam = playersToRepick?.[typedTeam];
     const shouldCurrentPlayerRepick = currentTeam?.map((player) => player?.player === data?.user.email)[0];
     
@@ -34,6 +38,10 @@ export default function Reveal() {
     const isBanDuplicatesEnabled = teamsPicks?.team2?.some(o => ids1.has(o._id)) ?? false;
     const duplicatedChampions = teamsPicks?.team2?.filter((champ) => ids1.has(champ._id));
     const isGameMaster = gameMasterData?.gameMaster === data?.user.email;
+
+    const handleGameStart = () => {
+        router.push(`/games/${gameId}/start`);
+    }
 
     const handleBanDuplicatedChampions = async () => {
         try {
@@ -71,7 +79,7 @@ export default function Reveal() {
                     Ban Duplicates
                 </Button> 
             }
-            <Button>Start Game</Button>
+            <Button className={startGameButtonClasses(finalPicksForGameStart === 4)} onClick={handleGameStart}>Start Game</Button>
         </div>
         </div>
     )

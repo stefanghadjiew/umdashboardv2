@@ -5,26 +5,21 @@ import { useQuery, useMutation } from "convex/react";
 import { ChampionCard } from "@components";
 import { Button } from "@shadcn-components";
 import { BackFromTeamButton } from "./BackFromTeamButton";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { Id } from "@convex/_generated/dataModel";
 import { useSession } from "@lib/auth-client";
 import { IChampion } from "app/intefaces";
 import { useSelectChampions } from "./useSelectChampions";
-import { useRouter } from "next/navigation";
 
 interface TeamPicks  {
     champions: IChampion[];
     player: string;
 }
 
-const readyButtonClasses = (ownPicks?: TeamPicks) => {
-    if(!ownPicks?.champions) {
-        return 'pointer-events-none opacity-50';
-    }
-    if([0,1].includes(ownPicks?.champions.length)) {
-      return 'pointer-events-none opacity-50';  
-    }
-    return '';
+const readyButtonClasses = (ownPicks?: TeamPicks,shouldDisableReadyButton?: boolean) => {
+    const disabledClasses = 'pointer-events-none opacity-50';
+    const disabledState = !ownPicks?.champions || [0,1].includes(ownPicks?.champions.length) || shouldDisableReadyButton;
+    return disabledState ? disabledClasses : '';
 }
 
 //TODO: Add functionality to Randomize ( the algorithm is in queries of convex )
@@ -35,8 +30,12 @@ export default function Lobby() {
     const { data: userData } = useSession();
     const { gameId, team } = useParams();
     const router = useRouter();
+    const typedTeam = team as 'team1' | 'team2';
     const gameIdTyped = gameId as Id<'games'>;
     const data = useQuery(api.queries.getChampionsPool,{gameId :gameIdTyped});
+    const playersToRepick = useQuery(api.queries.getPlayersWhoShouldRepick, { gameId: gameIdTyped });
+    const currentTeamToRepick = playersToRepick?.[typedTeam];
+    const shouldDisableReadyButton = currentTeamToRepick?.map((player) => player?.player).includes(userData?.user.email);
     const patchChampionPool = useMutation(api.mutations.patchChampionPool);
     const isGameMaster = data?.createdBy === userData?.user.email;
 
@@ -70,7 +69,7 @@ export default function Lobby() {
                         <Button className="flex-1/2" onClick={handleExcludeTiers}>Exclude S+/D+</Button>
                     </div>
                 }
-                <Button onClick={handleOnReadyClick} className={readyButtonClasses(ownPicks)}>Ready</Button>
+                <Button onClick={handleOnReadyClick} className={readyButtonClasses(ownPicks, shouldDisableReadyButton)}>Ready</Button>
                 <BackFromTeamButton />
             </div>
         </>

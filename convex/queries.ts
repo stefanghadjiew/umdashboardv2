@@ -2,35 +2,35 @@ import { DATABASE_TABLES } from "./constants";
 import { query } from './_generated/server';
 import { GAME_STATUS } from "./tables/games";
 import { v } from "convex/values";
-import { Champion } from "./tables/interfaces";
+import { filterBannedChampionsFromTeam, getPlayersWhoNeedRepick } from "./helper";
 
 
-const getPlayersWhoNeedRepick = (team: {player: string, champions: Champion[]}[], bannedChampions: Champion[] ) => {
-  const bannedChampionsIds = new Set(bannedChampions.map((champ) => champ._id));
-  const playersNeedingRePick = team
-    .map((team: any) => {
-      // count how many of their champions are banned
-      const bannedCount = team.champions.filter((c: any) =>
-        bannedChampionsIds.has(c._id)
-      ).length;
 
-      if (bannedCount > 0) {
-        return {
-          player: team.player,
-          numberOfPicks: bannedCount, // 1 or 2
-        };
-      }
-      return null;
-    })
-    .filter(Boolean);
-  
-    return playersNeedingRePick;
-}
+export const getFinalPicksForStartGamePage = query({
+  args: { gameId: v.id('games') },
+  handler: async (ctx, { gameId }) => {
+    const currentGame = await ctx.db.get(gameId);
+    if(!currentGame) {
+      throw new Error('Game not found!')
+    }
+    const team1Picks = currentGame.finalPicks?.team1?.map((player) => player.champions).flat();
+    const team2Picks = currentGame.finalPicks?.team2?.map((player) => player.champions).flat();
 
-const filterBannedChampionsFromTeam = (bannedChampions:Champion[],teamPicks?:Champion[]) => {
-  const bannedChampionsSetOfIds = new Set(bannedChampions.map((champ) => champ._id));
-  return teamPicks?.filter((champ) => !bannedChampionsSetOfIds.has(champ._id));
-}
+    return { team1: team1Picks, team2: team2Picks };
+  }
+})
+
+export const getFinalPicksForStartingGame = query({
+  args: { gameId: v.id('games') },
+  handler: async (ctx, { gameId }) => {
+    const currentGame = await ctx.db.get(gameId);
+    if(!currentGame) {
+      throw new Error('Game not found!')
+    }
+    return [...currentGame.finalPicks?.team1 ?? [], ...currentGame.finalPicks?.team2 ?? []].flatMap((player) => player.champions).length;
+  }
+})
+
 
 export const getFinalChampionsForTeam = query({
   args: {gameId: v.id('games'), team: v.union(v.literal('team1'), v.literal('team2'))},
@@ -110,7 +110,6 @@ export const getTeamChampions = query({
     return currentTeam;
   }
 })
-
 
 //TODO: Remove banned and already picked champions
 export const getChampionsPool = query({

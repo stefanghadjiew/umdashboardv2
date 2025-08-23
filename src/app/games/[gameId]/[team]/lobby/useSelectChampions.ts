@@ -12,7 +12,7 @@ interface TeamPicks  {
     player: string;
 }
 
-const pickedChampionsClasses = (champion: IChampion, ownPicks?: TeamPicks, teamMatePicks?: TeamPicks) => {
+const pickedChampionsClasses = (champion: IChampion, ownPicks?: TeamPicks,teamMatePicks?: TeamPicks) => {
     if(ownPicks?.champions?.map((champion) => champion.name).includes(champion.name)) {
         return 'border-10 border-green-400 h-[200px] w-[155px]';
     }
