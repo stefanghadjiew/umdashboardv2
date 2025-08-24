@@ -74,7 +74,7 @@ export default function Lobby() {
             <div className="w-full flex flex-col gap-2 max-w-[325px]">
                 {isGameMaster && 
                     <div className="flex gap-2">
-                        <Button className="flex-1/2">Randomize 25</Button>
+                        <Button className="flex-1/2 opacity-50 pointer-events-none">Randomize 25(in dev)</Button>
                         <Button className="flex-1/2" onClick={handleExcludeTiers}>Exclude S+/D+</Button>
                     </div>
                 }
