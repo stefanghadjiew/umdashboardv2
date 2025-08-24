@@ -34,12 +34,21 @@ export default function Lobby() {
     const gameIdTyped = gameId as Id<'games'>;
     const data = useQuery(api.queries.getChampionsPool,{gameId :gameIdTyped});
     const playersToRepick = useQuery(api.queries.getPlayersWhoShouldRepick, { gameId: gameIdTyped });
+    const teamPicks = useQuery(api.queries.getTeamsPicksForRevealPhase, ({ gameId: gameIdTyped }));
     const currentTeamToRepick = playersToRepick?.[typedTeam];
-    const shouldDisableReadyButton = currentTeamToRepick?.map((player) => player?.player).includes(userData?.user.email);
+    const shouldDisableReadyButton = 
+        currentTeamToRepick?.map((player) => player?.player).includes(userData?.user.email) 
+        || !(teamPicks?.team1?.length === 4 && teamPicks.team2?.length === 4);
     const patchChampionPool = useMutation(api.mutations.patchChampionPool);
     const isGameMaster = data?.createdBy === userData?.user.email;
 
-    const renderChampions = data?.championPool?.map((champion) => <ChampionCard className={pickedChampionsClasses(champion, ownPicks, teamMatePicks)} onClick={async () => await handleSelectChampion(champion)} key={champion._id} name={champion.name}/>);
+    const renderChampions = data?.championPool?.map(
+        (champion) => <ChampionCard 
+                        className={pickedChampionsClasses(champion, ownPicks, teamMatePicks)} 
+                        onClick={async () => await handleSelectChampion(champion)} 
+                        key={champion._id} 
+                        name={champion.name}/>
+    );
     const renderTeammateChampions = teamMatePicks?.champions.map((champ) => 
         <span 
             className="relative flex items-center justify-center before:content-['\2192'] after:content-['\2190'] before:mr-2 after:ml-2 text-lg font-bold text-red-400" 
