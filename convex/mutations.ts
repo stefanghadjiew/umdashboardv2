@@ -17,6 +17,19 @@ const newGame = {
     }
 }
 
+export const endGame = mutation({
+    args: { gameId: v.id('games') },
+    handler: async (ctx, { gameId }) => {
+        const currentGame = await ctx.db.get(gameId);
+        if(!currentGame) {
+            throw new Error('Game not found!')
+        }
+        await ctx.db.patch(gameId, {
+            status: 'DONE'
+        })
+    }
+})
+
 export const pickFinalChampion = mutation({
     args: {
         gameId: v.id('games'),

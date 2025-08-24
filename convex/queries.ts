@@ -4,7 +4,16 @@ import { GAME_STATUS } from "./tables/games";
 import { v } from "convex/values";
 import { filterBannedChampionsFromTeam, getPlayersWhoNeedRepick } from "./helper";
 
-
+export const getGameStatus = query({
+  args: { gameId: v.id('games') },
+  handler: async (ctx, { gameId }) => {
+    const currentGame = await ctx.db.get(gameId);
+    if(!currentGame) {
+      throw new Error('Game not found!')
+    }
+    return { status: currentGame.status };
+  }
+})
 
 export const getFinalPicksForStartGamePage = query({
   args: { gameId: v.id('games') },
